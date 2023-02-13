@@ -1,29 +1,34 @@
-import './App.css';
+import { Container, Typography, Grid } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
+import Signup from "./Signup";
+import Login from "./Login";
+import Home from "./Home";
+import Todos from "./Todos";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src="Octocat.png" className="App-logo" alt="logo" />
-        <p>
-          GitHub Codespaces <span className="heart">♥️</span> React
-        </p>
-        <p className="small">
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/todos" element={<Todos />} />
+      <Route
+        path="/*"
+        element={
+          <Grid Container textAlign="center" sx={{ height: "100vh" }}>
+            <Typography variant="h3">404</Typography>
+            <Typography variant="h2">Page Not Found</Typography>
+            <NavLink sx={{ m: 5 }} to="/">
+              Home
+            </NavLink>
+            <span>|</span>
+            <NavLink sx={{ m: 5 }} to="/login">
+              Login
+            </NavLink>
+          </Grid>
+        }
+      />
+    </Routes>
   );
 }
-
-export default App;
