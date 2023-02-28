@@ -1,7 +1,8 @@
 import {
   Container,
+  FormControl,
   Typography,
-  Box,
+  Box, Stack,
   Grid,
   Button,
   TextField
@@ -34,37 +35,45 @@ const Signup = () => {
   };
 
   return (
-    <Grid textAlign="center">
-      <h1>Todo</h1>
-      <h1>Signup</h1>
-      <form>
-        <TextField
-          type="email"
-          label="Email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          placeholder="Email address"
-        />
-        <TextField
-          type="password"
-          label="Create password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          placeholder="Email address"
-        />
-        <Box>
-          <Button variant="contained" type="submit" onClick={onSubmit}>
-            Sign up
-          </Button>
-        </Box>
-      </form>
-
-      <p>
-        Already have an account? <NavLink to="/login">Sign in</NavLink>
-      </p>
-    </Grid>
+    <Grid container spacing={2} alignItems="center"   textAlign='center' sx={{height:'100vh', backgroundColor: (theme) => theme.palette.background}}>
+      <Grid item xs={12}>
+        <Typography variant="h3" gutterBottom>
+          Sign up
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <FormControl component="form" onSubmit={onSubmit} color="primary">
+          <TextField
+            sx={{mb:2}}
+            type="email"
+            label="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="Email address"
+          />
+          <TextField
+            sx={{mb:2}}
+            type="password"
+            label="Create password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="Password"
+          />
+          <Box>
+            <Button variant="contained" type="submit">
+              Sign up
+            </Button>
+          </Box>
+        </FormControl>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="body1" align="center">
+          Already have an account? <NavLink to="/login">Sign in</NavLink>
+        </Typography>
+      </Grid>
+  </Grid>
   );
 };
 

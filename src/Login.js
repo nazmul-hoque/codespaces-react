@@ -1,4 +1,4 @@
-import { Grid, Typography, TextField, Box, Button } from "@mui/material";
+import { Grid, Typography, TextField, Box, Button, FormControl } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -25,16 +25,14 @@ const Login = () => {
   };
 
   return (
-    <Grid textAlign="center">
-      <Box sx={{ display: "flex", gap: 2, flexDirection: "column" }}>
-        <Box>
-          <Typography variant="h3"> Todo </Typography>
-        </Box>
-
+    <Grid container spacing={2} alignItems="center"   textAlign='center' sx={{height:'100vh'}}>
+      <Grid item xs={12}>
         <Typography variant="subtitle1" color="error">
           Login
         </Typography>
-        <form>
+        </Grid>
+        <Grid item xs={12}>
+        <FormControl component="form" onSubmit={onLogin}>
           <TextField
             label="email"
             id="email-address"
@@ -53,22 +51,22 @@ const Login = () => {
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Box sx={{ m: 5 }}>
-            <Button variant="contained" onClick={onLogin}>
+          <Box>
+            <Button variant="contained" type="submit">
               Login
             </Button>
           </Box>
-        </form>
-
-        <p className="text-sm text-white text-center">
-          No account yet? <NavLink to="/signup">Sign up</NavLink>
-        </p>
-        <p>
-          Goto <NavLink to="/todos">Todos</NavLink>
-        </p>
-      </Box>
-    </Grid>
-  );
-};
-
-export default Login;
+        </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body1" align="center">
+            No account yet? <NavLink to="/signup">Sign up</NavLink>
+          </Typography>
+          <Typography variant="body1" align="center">
+            Goto <NavLink to="/todos">Todos</NavLink>
+          </Typography>  
+        </Grid>
+  </Grid>
+);
+  };
+export default Login

@@ -17,10 +17,9 @@ import {
   updateDoc
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { async } from "@firebase/util";
 
-function TodoItem({ todo, key }) {
-  return <p key={key}> {todo.todo}</p>;
+function TodoItem({ todo }) {
+  return <Typography variant="body1">{todo.todo}</Typography>;
 }
 
 export default function Todos() {
@@ -33,16 +32,13 @@ export default function Todos() {
   const handleClickOpen = (todo) => {
     setOpen(true);
     setCurEditTodo(todo);
+    setEditedTodo(todo.todo);
   };
 
   const handleClose = () => {
     setOpen(false);
-
-    if (curEditTodo !== {}) {
-      updateTodo();
-    } else {
-      alert(`curEditTodo is empty!`);
-    }
+    setCurEditTodo({});
+    setEditedTodo("");
   };
 
   const updateTodo = async () => {
@@ -50,90 +46,87 @@ export default function Todos() {
 
     try {
       await updateDoc(doc(db, "todos", curEditTodo.id), newTodo);
+      fetchTodos();
+      handleClose();
     } catch (e) {
       alert(e);
     }
   };
 
-  // firebase load collection
-  const fetchPost = async () => {
-    await getDocs(collection(db, "todos")).then((querySnapshot) => {
-      const newData = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id
-      }));
-
-      setTodos(newData);
-      //alert(todos, newData);
-    });
+  const fetchTodos = async () => {
+    const querySnapshot = await getDocs(collection(db, "todos"));
+    const newData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    setTodos(newData);
   };
 
   useEffect(() => {
-    fetchPost();
-  }, [todos]);
+    fetchTodos();
+  }, []);
 
   const addTodo = async (e) => {
     e.preventDefault();
 
-    //alert(db);
-
     try {
-      const docRef = await addDoc(collection(db, "todos"), {
+      await addDoc(collection(db, "todos"), {
         todo: todo
       });
-      //alert("Document written with ID: ", docRef.id);
+      setTodo("");
+      fetchTodos();
     } catch (e) {
       alert(`error adding document ${e}`);
     }
   };
 
   const onDeleteTodo = async (todo) => {
-    alert(`${JSON.stringify(todo)}`);
-
     try {
       await deleteDoc(doc(db, "todos", todo.id));
+      fetchTodos();
     } catch (e) {
       alert(e);
     }
   };
 
   return (
-    <Grid textAlign="center">
-      <h1>Todo [{todos.length}]</h1>
-
-      <input
-        type="text"
-        placeholder="What do you have to do today?"
-        onChange={(e) => setTodo(e.target.value)}
-      />
-
-      <div className="btn-container">
-        <Button variant="contained" type="submit" onClick={addTodo}>
-          Submit
-        </Button>
-      </div>
-
-      <Box
-        sx={{ display: "flex", gap: 2, flexDirection: "column" }}
-        className="todo-content"
-      >
-        {todos?.map((todo, i) => (
-          <Paper elevation={3} sx={{ p: 2 }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center"
-              }}
-            >
-              <TodoItem key={i} todo={todo} />{" "}
-              <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-                <HighlightOffIcon
-                  className="pointer"
-                  onClick={(e) => onDeleteTodo(todo)}
-                  color="success"
-                />
+    <Grid container direction="column" alignItems="center" spacing={2}>
+      <Grid item>
+        <Typography variant="h4" component="h1">Todo List ({todos.length})</Typography>
+      </Grid>
+      <Grid item>
+        <form onSubmit={addTodo}>
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <TextField
+              variant="outlined"
+              placeholder="What do you have to do today?"
+              size="small"
+              value={todo}
+              onChange={(e) => setTodo(e.target.value)}
+            />
+            <Box ml={1}>
+              <Button variant="contained" color="primary" type="submit">Add</Button>
+            </Box>
+          </Box>
+        </form>
+      </Grid>
+      <Grid item>
+        <Box width='100%'>
+          {todos?.map((todo,i) => (
+            <Box key={todo.id} my={1}>
+            
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <TodoItem key={i} todo={todo} />
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <HighlightOffIcon
+                className="pointer"
+                onClick={() => onDeleteTodo(todo)}
+                color="success"
+              />
                 <ModeEditIcon
                   className="pointer"
                   onClick={(e) => handleClickOpen(todo)}
@@ -142,10 +135,12 @@ export default function Todos() {
               </Box>
             </Box>
           </Paper>
+        </Box>
+      
         ))}
-      </Box>
-
-      <Dialog open={open} onClose={handleClose}>
+        </Box>
+      </Grid>
+        <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit todo</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>

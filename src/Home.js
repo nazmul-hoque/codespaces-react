@@ -9,19 +9,6 @@ import { Container, Typography, TextField, Box, Button } from "@mui/material";
 const Home = () => {
   const navigate = useNavigate();
 
-  const [newTodo, setNewTodo] = useState();
-  const [todos, setTodos] = useState([]);
-
-  const onNewTodo = (e) => {
-    //alert(todos)
-
-    let oldTodos = todos;
-    oldTodos.push(newTodo);
-    setTodos(oldTodos);
-
-    //alert(todos)
-  };
-
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -56,23 +43,6 @@ const Home = () => {
         <Typography variant="h5" component="h1">
           Welcome Home
         </Typography>
-
-        <Box>
-          <TextField
-            type="text"
-            label="New To do"
-            value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
-          />
-          <Button onClick={onNewTodo}>ADD</Button>
-        </Box>
-
-        <Box>
-          {todos.map((todo, idx) => {
-            return <Typography key={idx}>{todo}</Typography>;
-          })}
-        </Box>
-
         <div>
           <Button color="error" onClick={handleLogout}>
             Logout
